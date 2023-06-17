@@ -1680,7 +1680,7 @@ class Scope {
 	void drawInfoText(Graphics g, String text) {
 		if (rect.y + rect.height <= textY + 5)
 			return;
-		g.drawString(text, 0, textY);
+		g.drawString(text, 10, textY + 5);
 		textY += 15;
 	}
 
