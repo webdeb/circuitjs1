@@ -820,14 +820,14 @@ public abstract class CircuitElm implements Editable {
     }
     int dpx = (int) (dpx1 * hs);
     int dpy = (int) (dpy1 * hs);
-    int yoff = w * n + 2 * n;
+    int yoff = g.currentFontSize * n + 2 * n;
     if (dpx == 0)
       g.drawString(s, xc - w / 2, yc - abs(dpy) - 2 - yoff);
     else {
       int xx = xc + abs(dpx) + 2;
       if (this instanceof VoltageElm || (x < x2 && y > y2))
         xx = xc - (w + abs(dpx) + 2);
-      g.drawString(s, xx, yc + dpy + ya + yoff);
+      g.drawString(s, xx, yc + dpy + ya - yoff);
     }
   }
 

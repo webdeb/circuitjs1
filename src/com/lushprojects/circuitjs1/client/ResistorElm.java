@@ -33,6 +33,7 @@ class ResistorElm extends LabeledElm {
   public ResistorElm(int xa, int ya, int xb, int yb, int f, StringTokenizer st) {
     super(xa, ya, xb, yb, f);
     resistance = new Double(st.nextToken()).doubleValue();
+    restoreLabel(st);
   }
 
   int getDumpType() {
@@ -40,7 +41,7 @@ class ResistorElm extends LabeledElm {
   }
 
   String dump() {
-    return super.dump() + " " + resistance;
+    return super.dump() + " " + resistance + " " + dumpLabel();
   }
 
   Point ps3, ps4;
@@ -96,8 +97,9 @@ class ResistorElm extends LabeledElm {
       String s = getShortUnitText(resistance, "");
       drawValues(g, s, hs + 2);
       drawValues(g, label, hs + 2, 1);
+    } else {
+      drawValues(g, label, hs + 2, 0);
     }
-    drawValues(g, label, hs + 2, 0);
     doDots(g);
     drawPosts(g);
   }
@@ -116,7 +118,7 @@ class ResistorElm extends LabeledElm {
     getBasicInfo(arr);
     arr[3] = "R = " + getUnitText(resistance, Locale.ohmString);
     arr[4] = "P = " + getUnitText(getPower(), "W");
-    arr[5] = label
+    arr[5] = label;
   }
 
   @Override
@@ -127,17 +129,17 @@ class ResistorElm extends LabeledElm {
   public EditInfo getEditInfo(int n) {
     // ohmString doesn't work here on linux
     if (n == 0)
-      return getLabelEditInfo();
-    if (n == 1)
       return new EditInfo("Resistance (ohms)", resistance, 0, 0);
+    if (n == 1)
+      return getLabelEditInfo();
     return null;
   }
 
   public void setEditValue(int n, EditInfo ei) {
     if (n == 0)
-      setLabel(ei);
-    if (n == 1)
       resistance = (ei.value <= 0) ? 1e-9 : ei.value;
+    if (n == 1)
+      setLabel(ei);
   }
 
   int getShortcut() {
