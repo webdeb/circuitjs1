@@ -279,7 +279,7 @@ MouseOutHandler, MouseWheelHandler {
     // canvas width/height in px (before device pixel ratio scaling)
     int canvasWidth, canvasHeight;
 
-    static final int MENUBARHEIGHT = 30;
+    static int MENUBARHEIGHT = 30;
     static int VERTICALPANELWIDTH = 166; // default
     static final int POSTGRABSQ = 25;
     static final int MINPOSTGRABSIZE = 256;
@@ -655,8 +655,11 @@ MouseOutHandler, MouseWheelHandler {
 
 	DOM.appendChild(layoutPanel.getElement(), topPanelCheckbox);
 	DOM.appendChild(layoutPanel.getElement(), topPanelCheckboxLabel);	
-	if (!hideMenu)
+	if (!hideMenu) {
 	    layoutPanel.addNorth(menuBar, MENUBARHEIGHT);
+	} else {
+			MENUBARHEIGHT = 0;
+	}
 
 	DOM.appendChild(layoutPanel.getElement(), sidePanelCheckbox);
 	DOM.appendChild(layoutPanel.getElement(), sidePanelCheckboxLabel);
