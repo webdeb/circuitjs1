@@ -797,8 +797,12 @@ public abstract class CircuitElm implements Editable {
     g.restore();
   }
 
-  // draw component values (number of resistor ohms, etc). hs = offset
   void drawValues(Graphics g, String s, double hs) {
+    drawValues(g, s, hs, 0);
+  }
+
+  // draw component values (number of resistor ohms, etc). hs = offset
+  void drawValues(Graphics g, String s, double hs, int n) {
     if (s == null)
       return;
     g.setFont(unitsFont);
@@ -816,13 +820,14 @@ public abstract class CircuitElm implements Editable {
     }
     int dpx = (int) (dpx1 * hs);
     int dpy = (int) (dpy1 * hs);
+    int yoff = w * n + 2 * n;
     if (dpx == 0)
-      g.drawString(s, xc - w / 2, yc - abs(dpy) - 2);
+      g.drawString(s, xc - w / 2, yc - abs(dpy) - 2 - yoff);
     else {
       int xx = xc + abs(dpx) + 2;
       if (this instanceof VoltageElm || (x < x2 && y > y2))
         xx = xc - (w + abs(dpx) + 2);
-      g.drawString(s, xx, yc + dpy + ya);
+      g.drawString(s, xx, yc + dpy + ya + yoff);
     }
   }
 
