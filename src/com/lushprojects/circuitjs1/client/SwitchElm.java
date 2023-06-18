@@ -86,7 +86,7 @@ class SwitchElm extends LabeledElm {
       g.setColor(whiteColor);
     interpPoint(lead1, lead2, ps, 0, hs1);
     interpPoint(lead1, lead2, ps2, 1, hs2);
-    drawValues(g, label, hs1, 0);
+    drawValues(g, label, hs1 - 3, 1);
     drawThickLine(g, ps, ps2);
     drawPosts(g);
   }

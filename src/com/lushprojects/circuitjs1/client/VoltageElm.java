@@ -197,7 +197,7 @@ class VoltageElm extends LabeledElm {
         drawDots(g, point2, lead2, -curcount);
       }
     }
-    drawValues(g, label, hs + 2);
+    drawValues(g, label, 16, 1);
     drawPosts(g);
   }
 
@@ -349,16 +349,25 @@ class VoltageElm extends LabeledElm {
     }
     if (n == 2)
       return new EditInfo("DC Offset (V)", bias, -20, 20);
-    if (waveform == WF_DC || waveform == WF_NOISE)
-      return null;
+    if (waveform == WF_DC || waveform == WF_NOISE) {
+      if (n == 3)
+        return getLabelEditInfo();
+      else
+        return null;
+    }
     if (n == 3)
       return new EditInfo("Frequency (Hz)", frequency, 4, 500);
     if (n == 4)
       return new EditInfo("Phase Offset (degrees)", phaseShift * 180 / pi, -180, 180).setDimensionless();
-    if (n == 5 && (waveform == WF_PULSE || waveform == WF_SQUARE))
-      return new EditInfo("Duty Cycle", dutyCycle * 100, 0, 100).setDimensionless();
-    if (n == 6)
+    if (waveform == WF_PULSE || waveform == WF_SQUARE) {
+      if (n == 5)
+        return new EditInfo("Duty Cycle", dutyCycle * 100, 0, 100).setDimensionless();
+      if (n == 6)
+        return getLabelEditInfo();
+    }
+    if (n == 5)
       return getLabelEditInfo();
+
     return null;
   }
 
@@ -367,6 +376,10 @@ class VoltageElm extends LabeledElm {
       maxVoltage = ei.value;
     if (n == 2)
       bias = ei.value;
+    if (n == 3 && (waveform == WF_DC || waveform == WF_NOISE)) {
+      setLabel(ei);
+      return;
+    }
     if (n == 3) {
       // adjust time zero to maintain continuity ind the waveform
       // even though the frequency has changed.
@@ -401,6 +414,10 @@ class VoltageElm extends LabeledElm {
     }
     if (n == 4)
       phaseShift = ei.value * pi / 180;
+    if (n == 5 && !(waveform == WF_PULSE || waveform == WF_SQUARE)) {
+      setLabel(ei);
+      return;
+    }
     if (n == 5)
       dutyCycle = ei.value * .01;
     if (n == 6)

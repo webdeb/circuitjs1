@@ -70,7 +70,7 @@ public class StringTokenizer implements Enumeration<Object> {
   /**
    * The position in the str, where we currently are.
    */
-  private int pos;
+  public int pos;
 
   /**
    * The string that should be split into tokens.
