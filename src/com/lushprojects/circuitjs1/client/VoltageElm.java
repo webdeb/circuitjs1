@@ -22,7 +22,7 @@ package com.lushprojects.circuitjs1.client;
 import com.google.gwt.user.client.Window;
 import com.lushprojects.circuitjs1.client.util.Locale;
 
-class VoltageElm extends CircuitElm {
+class VoltageElm extends LabeledElm {
   static final int FLAG_COS = 2;
   static final int FLAG_PULSE_DUTY = 4;
   int waveform;
@@ -60,6 +60,7 @@ class VoltageElm extends CircuitElm {
       bias = new Double(st.nextToken()).doubleValue();
       phaseShift = new Double(st.nextToken()).doubleValue();
       dutyCycle = new Double(st.nextToken()).doubleValue();
+      restoreLabel(st);
     } catch (Exception e) {
     }
     if ((flags & FLAG_COS) != 0) {
@@ -88,7 +89,7 @@ class VoltageElm extends CircuitElm {
       flags &= ~FLAG_PULSE_DUTY;
 
     return super.dump() + " " + waveform + " " + frequency + " " + maxVoltage + " " + bias + " " + phaseShift + " "
-        + dutyCycle;
+        + dutyCycle + " " + dumpLabel();
     // VarRailElm adds text at the end
   }
 
@@ -196,6 +197,7 @@ class VoltageElm extends CircuitElm {
         drawDots(g, point2, lead2, -curcount);
       }
     }
+    drawValues(g, label, hs + 2);
     drawPosts(g);
   }
 
@@ -326,6 +328,7 @@ class VoltageElm extends CircuitElm {
     if (waveform == WF_DC && current != 0 && sim.showResistanceInVoltageSources)
       arr[i++] = "(R = " + getUnitText(maxVoltage / current, Locale.ohmString) + ")";
     arr[i++] = "P = " + getUnitText(getPower(), "W");
+    arr[i++] = "LL = " + getLabel();
   }
 
   public EditInfo getEditInfo(int n) {
@@ -354,6 +357,8 @@ class VoltageElm extends CircuitElm {
       return new EditInfo("Phase Offset (degrees)", phaseShift * 180 / pi, -180, 180).setDimensionless();
     if (n == 5 && (waveform == WF_PULSE || waveform == WF_SQUARE))
       return new EditInfo("Duty Cycle", dutyCycle * 100, 0, 100).setDimensionless();
+    if (n == 6)
+      return getLabelEditInfo();
     return null;
   }
 
@@ -398,5 +403,7 @@ class VoltageElm extends CircuitElm {
       phaseShift = ei.value * pi / 180;
     if (n == 5)
       dutyCycle = ei.value * .01;
+    if (n == 6)
+      setLabel(ei);
   }
 }

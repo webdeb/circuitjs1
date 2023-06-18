@@ -21,7 +21,7 @@ package com.lushprojects.circuitjs1.client;
 
 import com.lushprojects.circuitjs1.client.util.Locale;
 
-class CapacitorElm extends CircuitElm {
+class CapacitorElm extends LabeledElm {
   double capacitance;
   double compResistance, voltdiff;
   double initialVoltage;
@@ -43,6 +43,7 @@ class CapacitorElm extends CircuitElm {
       initialVoltage = new Double(st.nextToken()).doubleValue();
     } catch (Exception e) {
     }
+    restoreLabel(st);
   }
 
   boolean isTrapezoidal() {
@@ -66,7 +67,7 @@ class CapacitorElm extends CircuitElm {
   }
 
   String dump() {
-    return super.dump() + " " + capacitance + " " + voltdiff + " " + initialVoltage;
+    return super.dump() + " " + capacitance + " " + voltdiff + " " + initialVoltage + " " + dumpLabel();
   }
 
   // used for PolarCapacitorElm
@@ -118,6 +119,9 @@ class CapacitorElm extends CircuitElm {
     if (sim.showValuesCheckItem.getState()) {
       String s = getShortUnitText(capacitance, "F");
       drawValues(g, s, hs);
+      drawValues(g, label, hs, 1);
+    } else {
+      drawValues(g, label, hs, 0);
     }
   }
 
@@ -190,6 +194,7 @@ class CapacitorElm extends CircuitElm {
     getBasicInfo(arr);
     arr[3] = "C = " + getUnitText(capacitance, "F");
     arr[4] = "P = " + getUnitText(getPower(), "W");
+    arr[5] = "LL = " + getLabel();
     // double v = getVoltageDiff();
     // arr[4] = "U = " + getUnitText(.5*capacitance*v*v, "J");
   }
@@ -209,6 +214,8 @@ class CapacitorElm extends CircuitElm {
     }
     if (n == 2)
       return new EditInfo("Initial Voltage (on Reset)", initialVoltage);
+    if (n == 3)
+      return getLabelEditInfo();
     // if you add more things here, check PolarCapacitorElm
     return null;
   }
@@ -224,6 +231,8 @@ class CapacitorElm extends CircuitElm {
     }
     if (n == 2)
       initialVoltage = ei.value;
+    if (n == 3)
+      setLabel(ei);
   }
 
   int getShortcut() {

@@ -19,7 +19,7 @@
 
 package com.lushprojects.circuitjs1.client;
 
-class InductorElm extends CircuitElm {
+class InductorElm extends LabeledElm {
   Inductor ind;
   double inductance;
   double initialCurrent;
@@ -39,7 +39,9 @@ class InductorElm extends CircuitElm {
     try {
       initialCurrent = new Double(st.nextToken()).doubleValue();
     } catch (Exception e) {
+      st.pos--;
     }
+    restoreLabel(st);
     ind.setup(inductance, current, flags);
   }
 
@@ -48,7 +50,7 @@ class InductorElm extends CircuitElm {
   }
 
   String dump() {
-    return super.dump() + " " + inductance + " " + current + " " + initialCurrent;
+    return super.dump() + " " + inductance + " " + current + " " + initialCurrent + " " + dumpLabel();
   }
 
   void setPoints() {
@@ -68,6 +70,9 @@ class InductorElm extends CircuitElm {
     if (sim.showValuesCheckItem.getState()) {
       String s = getShortUnitText(inductance, "H");
       drawValues(g, s, hs);
+      drawValues(g, label, hs, 1);
+    } else {
+      drawValues(g, label, hs);
     }
     doDots(g);
     drawPosts(g);
@@ -106,6 +111,7 @@ class InductorElm extends CircuitElm {
     getBasicInfo(arr);
     arr[3] = "L = " + getUnitText(inductance, "H");
     arr[4] = "P = " + getUnitText(getPower(), "W");
+    arr[5] = "LL = " + getLabel();
   }
 
   public EditInfo getEditInfo(int n) {
@@ -118,6 +124,8 @@ class InductorElm extends CircuitElm {
     }
     if (n == 2)
       return new EditInfo("Initial Current (on Reset) (A)", initialCurrent);
+    if (n == 3)
+      return getLabelEditInfo();
     return null;
   }
 
@@ -132,6 +140,9 @@ class InductorElm extends CircuitElm {
     }
     if (n == 2)
       initialCurrent = ei.value;
+    if (n == 3)
+      setLabel(ei);
+
     ind.setup(inductance, current, flags);
   }
 

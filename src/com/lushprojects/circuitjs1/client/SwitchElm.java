@@ -20,7 +20,7 @@
 package com.lushprojects.circuitjs1.client;
 
 // SPST switch
-class SwitchElm extends CircuitElm {
+class SwitchElm extends LabeledElm {
   boolean momentary;
   // position 0 == closed, position 1 == open
   int position, posCount;
@@ -50,6 +50,7 @@ class SwitchElm extends CircuitElm {
       position = new Integer(str).intValue();
     momentary = new Boolean(st.nextToken()).booleanValue();
     posCount = 2;
+    restoreLabel(st);
   }
 
   int getDumpType() {
@@ -57,7 +58,7 @@ class SwitchElm extends CircuitElm {
   }
 
   String dump() {
-    return super.dump() + " " + position + " " + momentary;
+    return super.dump() + " " + position + " " + momentary + " " + dumpLabel();
   }
 
   Point ps, ps2;
@@ -85,7 +86,7 @@ class SwitchElm extends CircuitElm {
       g.setColor(whiteColor);
     interpPoint(lead1, lead2, ps, 0, hs1);
     interpPoint(lead1, lead2, ps2, 1, hs2);
-
+    drawValues(g, label, hs1, 0);
     drawThickLine(g, ps, ps2);
     drawPosts(g);
   }
@@ -120,6 +121,7 @@ class SwitchElm extends CircuitElm {
       arr[1] = "closed";
       arr[2] = "V = " + getVoltageText(volts[0]);
       arr[3] = "I = " + getCurrentDText(getCurrent());
+      arr[4] = "LL = " + getLabel();
     }
   }
 
@@ -141,12 +143,16 @@ class SwitchElm extends CircuitElm {
       ei.checkbox = new Checkbox("Momentary Switch", momentary);
       return ei;
     }
+    if (n == 1)
+      return getLabelEditInfo();
     return null;
   }
 
   public void setEditValue(int n, EditInfo ei) {
     if (n == 0)
       momentary = ei.checkbox.getState();
+    if (n == 1)
+      setLabel(ei);
   }
 
   int getShortcut() {
